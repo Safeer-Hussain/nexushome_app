@@ -127,6 +127,46 @@ class DeviceListNotifier extends StateNotifier<List<DeviceEntity>> {
     await _repository.updateAttributes(id, position: position);
   }
 
+  Future<void> updateEvChargeCurrent(String id, int amps) async {
+    final index = state.indexWhere((d) => d.id == id);
+    if (index == -1) return;
+
+    final target = state[index];
+    final watts = target.isPowered ? (amps * 230.0) : 0.0;
+    final updated = target.copyWith(chargeCurrentAmps: amps, powerWatts: watts);
+
+    state = [
+      for (final dev in state)
+        if (dev.id == id) updated else dev,
+    ];
+
+    await _repository.updateAttributes(
+      id,
+      chargeCurrentAmps: amps,
+      powerWatts: watts,
+    );
+  }
+
+  Future<void> toggleEvOffPeakSchedule(String id) async {
+    final index = state.indexWhere((d) => d.id == id);
+    if (index == -1) return;
+
+    final target = state[index];
+    final updated = target.copyWith(
+      offPeakScheduleEnabled: !target.offPeakScheduleEnabled,
+    );
+
+    state = [
+      for (final dev in state)
+        if (dev.id == id) updated else dev,
+    ];
+
+    await _repository.updateAttributes(
+      id,
+      offPeakScheduleEnabled: updated.offPeakScheduleEnabled,
+    );
+  }
+
   Future<void> commissionDevice(DeviceModel device) async {
     await _repository.commissionDevice(device);
     state = [...state, device];

@@ -19,6 +19,9 @@ class DeviceModel extends DeviceEntity {
     super.rssi,
     super.pairingCode,
     required super.updatedAt,
+    super.chargeCurrentAmps,
+    super.chargeSocPercent,
+    super.offPeakScheduleEnabled,
   });
 
   factory DeviceModel.fromMap(Map<String, dynamic> map) {
@@ -41,6 +44,9 @@ class DeviceModel extends DeviceEntity {
       pairingCode: map['pairing_code'] as String?,
       updatedAt:
           map['updated_at'] as int? ?? DateTime.now().millisecondsSinceEpoch,
+      chargeCurrentAmps: map['charge_current_amps'] as int? ?? 16,
+      chargeSocPercent: (map['charge_soc_percent'] as num?)?.toDouble() ?? 65.0,
+      offPeakScheduleEnabled: (map['off_peak_enabled'] as int? ?? 1) == 1,
     );
   }
 
@@ -63,6 +69,9 @@ class DeviceModel extends DeviceEntity {
       'rssi': rssi,
       'pairing_code': pairingCode,
       'updated_at': updatedAt,
+      'charge_current_amps': chargeCurrentAmps,
+      'charge_soc_percent': chargeSocPercent,
+      'off_peak_enabled': offPeakScheduleEnabled ? 1 : 0,
     };
   }
 
@@ -85,6 +94,9 @@ class DeviceModel extends DeviceEntity {
       rssi: entity.rssi,
       pairingCode: entity.pairingCode,
       updatedAt: entity.updatedAt,
+      chargeCurrentAmps: entity.chargeCurrentAmps,
+      chargeSocPercent: entity.chargeSocPercent,
+      offPeakScheduleEnabled: entity.offPeakScheduleEnabled,
     );
   }
 }

@@ -85,8 +85,9 @@ class EnergyChart extends StatelessWidget {
                       interval: 4,
                       getTitlesWidget: (value, meta) {
                         final hour = value.toInt();
-                        if (hour < 0 || hour > 24)
+                        if (hour < 0 || hour > 24) {
                           return const SizedBox.shrink();
+                        }
                         return Padding(
                           padding: const EdgeInsets.only(top: 4.0),
                           child: Text(

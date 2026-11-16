@@ -47,8 +47,9 @@ class SettingsView extends ConsumerWidget {
                       value: ThemeMode.dark,
                       groupValue: themeMode,
                       onChanged: (mode) {
-                        if (mode != null)
+                        if (mode != null) {
                           ref.read(themeModeProvider.notifier).setTheme(mode);
+                        }
                       },
                     ),
                     RadioListTile<ThemeMode>(
@@ -62,8 +63,9 @@ class SettingsView extends ConsumerWidget {
                       value: ThemeMode.light,
                       groupValue: themeMode,
                       onChanged: (mode) {
-                        if (mode != null)
+                        if (mode != null) {
                           ref.read(themeModeProvider.notifier).setTheme(mode);
+                        }
                       },
                     ),
                   ],

@@ -53,17 +53,45 @@ class DeviceRepository {
     String? hvacMode,
     bool? isLocked,
     int? position,
+    int? chargeCurrentAmps,
+    double? chargeSocPercent,
+    bool? offPeakScheduleEnabled,
+    double? powerWatts,
   }) async {
     final db = await appDatabase.database;
     final now = DateTime.now().millisecondsSinceEpoch;
     final Map<String, dynamic> updates = {'updated_at': now};
 
-    if (brightness != null) updates['brightness'] = brightness;
-    if (colorTemp != null) updates['color_temp'] = colorTemp;
-    if (targetTemp != null) updates['target_temp'] = targetTemp;
-    if (hvacMode != null) updates['hvac_mode'] = hvacMode;
-    if (isLocked != null) updates['is_locked'] = isLocked ? 1 : 0;
-    if (position != null) updates['position'] = position;
+    if (brightness != null) {
+      updates['brightness'] = brightness;
+    }
+    if (colorTemp != null) {
+      updates['color_temp'] = colorTemp;
+    }
+    if (targetTemp != null) {
+      updates['target_temp'] = targetTemp;
+    }
+    if (hvacMode != null) {
+      updates['hvac_mode'] = hvacMode;
+    }
+    if (isLocked != null) {
+      updates['is_locked'] = isLocked ? 1 : 0;
+    }
+    if (position != null) {
+      updates['position'] = position;
+    }
+    if (chargeCurrentAmps != null) {
+      updates['charge_current_amps'] = chargeCurrentAmps;
+    }
+    if (chargeSocPercent != null) {
+      updates['charge_soc_percent'] = chargeSocPercent;
+    }
+    if (offPeakScheduleEnabled != null) {
+      updates['off_peak_enabled'] = offPeakScheduleEnabled ? 1 : 0;
+    }
+    if (powerWatts != null) {
+      updates['power_watts'] = powerWatts;
+    }
 
     await db.update('devices', updates, where: 'id = ?', whereArgs: [id]);
 
@@ -86,6 +114,13 @@ class DeviceRepository {
         deviceId: id,
         attribute: 'isLocked',
         value: isLocked,
+      );
+    }
+    if (chargeCurrentAmps != null) {
+      await matterBridge.setDeviceAttribute(
+        deviceId: id,
+        attribute: 'chargeCurrentAmps',
+        value: chargeCurrentAmps,
       );
     }
   }

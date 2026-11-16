@@ -30,6 +30,8 @@ class _DeviceControlSheetState extends ConsumerState<DeviceControlSheet> {
   late String _hvacMode;
   late bool _isLocked;
   late int _blindsPos;
+  late int _chargeAmps;
+  late bool _offPeakEnabled;
   final TextEditingController _pinController = TextEditingController();
   String? _pinError;
 
@@ -42,6 +44,8 @@ class _DeviceControlSheetState extends ConsumerState<DeviceControlSheet> {
     _hvacMode = widget.device.hvacMode;
     _isLocked = widget.device.isLocked;
     _blindsPos = widget.device.position;
+    _chargeAmps = widget.device.chargeCurrentAmps;
+    _offPeakEnabled = widget.device.offPeakScheduleEnabled;
   }
 
   @override
@@ -127,6 +131,8 @@ class _DeviceControlSheetState extends ConsumerState<DeviceControlSheet> {
                 _buildLockControls(colorScheme),
               ] else if (device.type == 'blinds') ...[
                 _buildBlindsControls(colorScheme),
+              ] else if (device.type == 'ev_charger') ...[
+                _buildEvChargerControls(colorScheme),
               ] else ...[
                 _buildGenericControls(colorScheme),
               ],
@@ -462,6 +468,195 @@ class _DeviceControlSheetState extends ConsumerState<DeviceControlSheet> {
                 .read(deviceListProvider.notifier)
                 .updateBlindsPosition(widget.device.id, val.round());
           },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEvChargerControls(ColorScheme colorScheme) {
+    final kw = (_chargeAmps * 230.0 / 1000.0).toStringAsFixed(2);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainer,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: colorScheme.outlineVariant, width: 1),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.directions_car_filled_rounded,
+                        size: 20,
+                        color: colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'EV Battery State of Charge',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    '${widget.device.chargeSocPercent.toStringAsFixed(0)}%',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: LinearProgressIndicator(
+                  value: widget.device.chargeSocPercent / 100.0,
+                  minHeight: 8,
+                  backgroundColor: colorScheme.surfaceContainerHighest,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    colorScheme.primary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Connected to 400V 82kWh Battery Pack • J1772 / NACS Protocol',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Charging Current Rate',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: colorScheme.onSurface,
+              ),
+            ),
+            Text(
+              '$_chargeAmps A ($kw kW)',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: colorScheme.secondary,
+              ),
+            ),
+          ],
+        ),
+        Slider(
+          value: _chargeAmps.toDouble(),
+          min: 6,
+          max: 32,
+          divisions: 26,
+          activeColor: colorScheme.secondary,
+          onChanged: (val) {
+            setState(() => _chargeAmps = val.round());
+          },
+          onChangeEnd: (val) {
+            ref
+                .read(deviceListProvider.notifier)
+                .updateEvChargeCurrent(widget.device.id, val.round());
+          },
+        ),
+        const SizedBox(height: 12),
+        Card(
+          color: colorScheme.surfaceContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+            side: BorderSide(
+              color: _offPeakEnabled
+                  ? colorScheme.primary.withValues(alpha: 0.3)
+                  : colorScheme.outlineVariant,
+            ),
+          ),
+          child: SwitchListTile(
+            title: Row(
+              children: [
+                Icon(
+                  Icons.schedule_rounded,
+                  size: 18,
+                  color: _offPeakEnabled
+                      ? colorScheme.primary
+                      : colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Smart Off-Peak Window Scheduler',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+              ],
+            ),
+            subtitle: Text(
+              'Pauses charging during 17:00-21:00 peak tariffs (\$0.48/kWh). Resumes automatically during midnight off-peak (\$0.08/kWh) or solar surplus > 3.5 kW.',
+              style: TextStyle(
+                fontSize: 10.5,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+            value: _offPeakEnabled,
+            onChanged: (val) {
+              setState(() => _offPeakEnabled = val);
+              ref
+                  .read(deviceListProvider.notifier)
+                  .toggleEvOffPeakSchedule(widget.device.id);
+              AppFeedback.showSuccess(
+                context,
+                val
+                    ? 'Off-Peak EV charging schedule armed. Peak tariffs avoided.'
+                    : 'Off-Peak schedule disabled. Immediate charge enabled.',
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            icon: const Icon(Icons.bolt_rounded, size: 18),
+            label: const Text('Instant Full-Rate Boost Charge (32A)'),
+            onPressed: () {
+              setState(() {
+                _chargeAmps = 32;
+                _offPeakEnabled = false;
+              });
+              ref
+                  .read(deviceListProvider.notifier)
+                  .updateEvChargeCurrent(widget.device.id, 32);
+              ref
+                  .read(deviceListProvider.notifier)
+                  .toggleEvOffPeakSchedule(widget.device.id);
+              AppFeedback.showWarning(
+                context,
+                'Full 32A (7.36 kW) Boost Charge activated. Overriding tariff pause.',
+              );
+            },
+          ),
         ),
       ],
     );

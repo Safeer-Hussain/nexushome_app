@@ -38,17 +38,27 @@ class AutomationRepository {
       final deviceId = map['deviceId'] as String;
       final updates = <String, dynamic>{'updated_at': now};
 
-      if (map.containsKey('isPowered'))
+      if (map.containsKey('isPowered')) {
         updates['is_powered'] = map['isPowered'];
-      if (map.containsKey('brightness'))
+      }
+      if (map.containsKey('brightness')) {
         updates['brightness'] = map['brightness'];
-      if (map.containsKey('colorTemp'))
+      }
+      if (map.containsKey('colorTemp')) {
         updates['color_temp'] = map['colorTemp'];
-      if (map.containsKey('targetTemp'))
+      }
+      if (map.containsKey('targetTemp')) {
         updates['target_temp'] = map['targetTemp'];
-      if (map.containsKey('hvacMode')) updates['hvac_mode'] = map['hvacMode'];
-      if (map.containsKey('isLocked')) updates['is_locked'] = map['isLocked'];
-      if (map.containsKey('position')) updates['position'] = map['position'];
+      }
+      if (map.containsKey('hvacMode')) {
+        updates['hvac_mode'] = map['hvacMode'];
+      }
+      if (map.containsKey('isLocked')) {
+        updates['is_locked'] = map['isLocked'];
+      }
+      if (map.containsKey('position')) {
+        updates['position'] = map['position'];
+      }
 
       await db.update(
         'devices',

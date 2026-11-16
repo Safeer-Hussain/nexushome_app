@@ -110,6 +110,10 @@ class FakeDeviceRepository implements DeviceRepository {
     String? hvacMode,
     bool? isLocked,
     int? position,
+    int? chargeCurrentAmps,
+    double? chargeSocPercent,
+    bool? offPeakScheduleEnabled,
+    double? powerWatts,
   }) async {
     final idx = devices.indexWhere((d) => d.id == id);
     if (idx != -1) {
@@ -121,6 +125,10 @@ class FakeDeviceRepository implements DeviceRepository {
           hvacMode: hvacMode,
           isLocked: isLocked,
           position: position,
+          chargeCurrentAmps: chargeCurrentAmps,
+          chargeSocPercent: chargeSocPercent,
+          offPeakScheduleEnabled: offPeakScheduleEnabled,
+          powerWatts: powerWatts,
         ),
       );
     }

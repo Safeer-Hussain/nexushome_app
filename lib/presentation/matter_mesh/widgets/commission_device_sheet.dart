@@ -48,6 +48,7 @@ class _CommissionDeviceSheetState extends ConsumerState<CommissionDeviceSheet> {
     {'type': 'lock', 'label': 'Smart Deadbolt'},
     {'type': 'blinds', 'label': 'Motorized Blinds'},
     {'type': 'sensor', 'label': 'Environmental Sensor'},
+    {'type': 'ev_charger', 'label': 'EV Smart Charger (Level 2)'},
   ];
 
   final List<String> _protocols = [
@@ -98,9 +99,14 @@ class _CommissionDeviceSheetState extends ConsumerState<CommissionDeviceSheet> {
       hvacMode: _selectedType == 'hvac' ? 'cool' : 'off',
       isLocked: true,
       position: _selectedType == 'blinds' ? 50 : 0,
+      chargeCurrentAmps: _selectedType == 'ev_charger' ? 16 : 16,
+      chargeSocPercent: _selectedType == 'ev_charger' ? 62.0 : 0.0,
+      offPeakScheduleEnabled: _selectedType == 'ev_charger' ? true : false,
       powerWatts: _selectedType == 'light'
           ? 20.0
-          : (_selectedType == 'hvac' ? 650.0 : 8.0),
+          : (_selectedType == 'hvac'
+                ? 650.0
+                : (_selectedType == 'ev_charger' ? 3680.0 : 8.0)),
       rssi: -45 - Random().nextInt(15),
       pairingCode: code,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
@@ -212,6 +218,17 @@ class _CommissionDeviceSheetState extends ConsumerState<CommissionDeviceSheet> {
                           'Patio Deadbolt',
                           'lock',
                           '1120-4493-556',
+                          'Matter over Wi-Fi',
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ActionChip(
+                        avatar: const Icon(Icons.ev_station_rounded, size: 16),
+                        label: const Text('HyperCharge EVSE'),
+                        onPressed: () => _applyQuickDiscovery(
+                          'HyperCharge Pro EVSE',
+                          'ev_charger',
+                          '4019-8821-654',
                           'Matter over Wi-Fi',
                         ),
                       ),

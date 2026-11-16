@@ -2,7 +2,8 @@ class DeviceEntity {
   final String id;
   final String name;
   final String room;
-  final String type; // 'light', 'hvac', 'lock', 'blinds', 'sensor', 'router'
+  final String
+  type; // 'light', 'hvac', 'lock', 'blinds', 'sensor', 'router', 'ev_charger'
   final String protocol; // 'Thread 1.3', 'Matter over Wi-Fi', 'BLE Mesh'
   final bool isPowered;
   final int brightness; // 0 - 100
@@ -16,6 +17,9 @@ class DeviceEntity {
   final int rssi;
   final String? pairingCode;
   final int updatedAt;
+  final int chargeCurrentAmps; // 6A - 32A
+  final double chargeSocPercent; // 0 - 100%
+  final bool offPeakScheduleEnabled;
 
   const DeviceEntity({
     required this.id,
@@ -35,6 +39,9 @@ class DeviceEntity {
     this.rssi = -55,
     this.pairingCode,
     required this.updatedAt,
+    this.chargeCurrentAmps = 16,
+    this.chargeSocPercent = 65.0,
+    this.offPeakScheduleEnabled = true,
   });
 
   DeviceEntity copyWith({
@@ -55,6 +62,9 @@ class DeviceEntity {
     int? rssi,
     String? pairingCode,
     int? updatedAt,
+    int? chargeCurrentAmps,
+    double? chargeSocPercent,
+    bool? offPeakScheduleEnabled,
   }) {
     return DeviceEntity(
       id: id ?? this.id,
@@ -74,6 +84,10 @@ class DeviceEntity {
       rssi: rssi ?? this.rssi,
       pairingCode: pairingCode ?? this.pairingCode,
       updatedAt: updatedAt ?? this.updatedAt,
+      chargeCurrentAmps: chargeCurrentAmps ?? this.chargeCurrentAmps,
+      chargeSocPercent: chargeSocPercent ?? this.chargeSocPercent,
+      offPeakScheduleEnabled:
+          offPeakScheduleEnabled ?? this.offPeakScheduleEnabled,
     );
   }
 }

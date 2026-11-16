@@ -165,7 +165,21 @@ class AiCopilotNotifier extends StateNotifier<AiCopilotState> {
         .where((d) => d.isPowered)
         .fold<double>(0.0, (acc, d) => acc + d.powerWatts);
 
-    if (lower.contains('vampire') || lower.contains('standby')) {
+    if (lower.contains('ev') ||
+        lower.contains('charger') ||
+        lower.contains('car') ||
+        lower.contains('charging')) {
+      final evChargers = devices.where((d) => d.type == 'ev_charger').toList();
+      final evCount = evChargers.length;
+      final evSoc = evChargers.isNotEmpty
+          ? evChargers.first.chargeSocPercent.toInt()
+          : 0;
+      final offPeak =
+          evChargers.isNotEmpty && evChargers.first.offPeakScheduleEnabled;
+      return 'EV Charging Intelligence: Monitoring $evCount Level 2 EVSE terminal(s). '
+          'Current Battery SoC: $evSoc%. Smart Off-Peak Scheduler is currently ${offPeak ? 'ACTIVE (deferring high-current draw to 23:00-06:00 or solar surplus > 3.5 kW)' : 'PAUSED (Immediate charging mode)'}. '
+          'Recommendation: Keep off-peak scheduling enabled with a 16A-24A solar-tracking limit to avoid grid demand charges and save up to 45% on vehicle charging expenses.';
+    } else if (lower.contains('vampire') || lower.contains('standby')) {
       return 'Vampire Standby Audit complete. Found $activeCount active devices drawing ${totalWatts.toStringAsFixed(1)} W. '
           'Culinary Luminaire Array and Studio Task Spotlight account for 93.0 W of continuous draw while unoccupied. '
           'Recommendation: Enable automatic 15-minute inactivity cutoffs in the Automation Rule Builder to save an estimated 38.4 kWh monthly.';

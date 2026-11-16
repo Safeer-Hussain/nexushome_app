@@ -106,5 +106,70 @@ void main() {
       expect(notifier.state.any((d) => d.id == devId), isFalse);
       expect(repository.devices.any((d) => d.id == devId), isFalse);
     });
+
+    test(
+      'Updates EV charge current and recalculates wattage dynamically',
+      () async {
+        await notifier.loadDevices();
+        final evDevice = DeviceModel(
+          id: 'dev_garage_ev',
+          name: 'Garage HyperCharge EVSE',
+          room: 'Solar Garage',
+          type: 'ev_charger',
+          protocol: 'Matter over Wi-Fi',
+          isPowered: true,
+          chargeCurrentAmps: 16,
+          chargeSocPercent: 55,
+          offPeakScheduleEnabled: true,
+          powerWatts: 3680.0,
+          updatedAt: DateTime.now().millisecondsSinceEpoch,
+        );
+        await notifier.commissionDevice(evDevice);
+
+        await notifier.updateEvChargeCurrent('dev_garage_ev', 32);
+        final updated = notifier.state.firstWhere(
+          (d) => d.id == 'dev_garage_ev',
+        );
+        expect(updated.chargeCurrentAmps, equals(32));
+        expect(updated.powerWatts, equals(7360.0));
+        expect(updated.isPowered, isTrue);
+
+        final repoDev = repository.devices.firstWhere(
+          (d) => d.id == 'dev_garage_ev',
+        );
+        expect(repoDev.chargeCurrentAmps, equals(32));
+        expect(repoDev.powerWatts, equals(7360.0));
+      },
+    );
+
+    test('Toggles EV off-peak schedule flag immutably', () async {
+      await notifier.loadDevices();
+      final evDevice = DeviceModel(
+        id: 'dev_garage_ev2',
+        name: 'Garage EV Charger 2',
+        room: 'Solar Garage',
+        type: 'ev_charger',
+        protocol: 'Matter over Wi-Fi',
+        isPowered: true,
+        chargeCurrentAmps: 16,
+        chargeSocPercent: 40,
+        offPeakScheduleEnabled: true,
+        powerWatts: 3680.0,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+      );
+      await notifier.commissionDevice(evDevice);
+
+      await notifier.toggleEvOffPeakSchedule('dev_garage_ev2');
+      final updated = notifier.state.firstWhere(
+        (d) => d.id == 'dev_garage_ev2',
+      );
+      expect(updated.offPeakScheduleEnabled, isFalse);
+
+      await notifier.toggleEvOffPeakSchedule('dev_garage_ev2');
+      final updatedAgain = notifier.state.firstWhere(
+        (d) => d.id == 'dev_garage_ev2',
+      );
+      expect(updatedAgain.offPeakScheduleEnabled, isTrue);
+    });
   });
 }

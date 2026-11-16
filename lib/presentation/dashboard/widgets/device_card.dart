@@ -44,6 +44,17 @@ class DeviceCard extends ConsumerWidget {
         icon = Icons.sensors_rounded;
         statusText = '${device.powerWatts} W';
         break;
+      case 'ev_charger':
+        icon = Icons.ev_station_rounded;
+        final kw = (device.chargeCurrentAmps * 230.0 / 1000.0).toStringAsFixed(
+          1,
+        );
+        statusText = isPowered
+            ? (device.offPeakScheduleEnabled
+                  ? '$kw kW • Off-Peak'
+                  : '$kw kW • Boost')
+            : 'Idle • ${device.chargeSocPercent.toInt()}% SoC';
+        break;
       default:
         icon = Icons.devices_other_rounded;
         statusText = isPowered ? 'Active' : 'Standby';

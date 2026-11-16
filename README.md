@@ -107,6 +107,7 @@ sequenceDiagram
 | **Automations & Scenes** | One-tap quick scenes ("Good Morning", "Cinema Mode", "Eco Saver"), IF-THEN rule builder | Production Ready |
 | **Security Sentinel** | Armed Home / Armed Away / Disarmed states, live camera cards, PIR motion event stream | Production Ready |
 | **On-Device AI Copilot** | Contextual power auditor, token streaming guarded in `try ... finally`, one-tap efficiency prompts | Production Ready |
+| **EV Smart Charger (Level 2)** | Dynamic 6A-32A current slider, battery SoC gauge, off-peak tariff scheduler (23:00-06:00), fast-charge boost override | Production Ready |
 | **Recruiter Debug Drawer** | Latency simulator (100-1500ms), HTTP 503 cloud outage toggle, motion trigger injection | Production Ready |
 
 ---

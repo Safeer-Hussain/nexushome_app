@@ -70,7 +70,10 @@ class AppDatabase {
         power_watts REAL NOT NULL DEFAULT 0.0,
         rssi INTEGER NOT NULL DEFAULT -55,
         pairing_code TEXT,
-        updated_at INTEGER NOT NULL
+        updated_at INTEGER NOT NULL,
+        charge_current_amps INTEGER NOT NULL DEFAULT 16,
+        charge_soc_percent REAL NOT NULL DEFAULT 65.0,
+        off_peak_enabled INTEGER NOT NULL DEFAULT 1
       )
     ''');
 
@@ -288,6 +291,31 @@ class AppDatabase {
         'rssi': -40,
         'pairing_code': '1240-9903-881',
         'updated_at': now,
+        'charge_current_amps': 16,
+        'charge_soc_percent': 65.0,
+        'off_peak_enabled': 1,
+      },
+      {
+        'id': 'dev_garage_ev_charger',
+        'name': 'HyperCharge Pro EVSE',
+        'room': 'Solar Garage',
+        'type': 'ev_charger',
+        'protocol': 'Matter over Wi-Fi',
+        'is_powered': 1,
+        'brightness': 0,
+        'color_temp': 0,
+        'target_temp': 0.0,
+        'current_temp': 0.0,
+        'hvac_mode': 'off',
+        'is_locked': 0,
+        'position': 0,
+        'power_watts': 7360.0,
+        'rssi': -42,
+        'pairing_code': '6610-8822-105',
+        'updated_at': now,
+        'charge_current_amps': 32,
+        'charge_soc_percent': 68.0,
+        'off_peak_enabled': 1,
       },
     ];
 

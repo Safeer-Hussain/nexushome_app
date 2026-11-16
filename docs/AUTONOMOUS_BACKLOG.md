@@ -4,10 +4,11 @@ This document defines the 25 daily engineering sprints for NexusHome. Each sprin
 
 ---
 
-### [ ] Sprint 01: EV Charger Smart Off-Peak Scheduler
+### [x] Sprint 01: EV Charger Smart Off-Peak Scheduler
 - **User Story**: As an electric vehicle owner, I want NexusHome to automatically defer EV charging to lowest-tariff midnight hours or solar peak windows so I minimize charging costs.
 - **Technical Scope**: Add EV Charger device type, integrate charging current slider (6A - 32A), off-peak scheduling logic in SQLite, and dynamic tariff trigger.
 - **Acceptance Criteria**: EV charging stops during peak tariff windows (17:00-21:00) and resumes automatically at off-peak. Passes all unit and widget tests.
+- **Status**: COMPLETED (Automated Gatekeeper Verified, 26 Tests Passing, SQLite Seeding & UI Controls Active)
 
 ---
 
