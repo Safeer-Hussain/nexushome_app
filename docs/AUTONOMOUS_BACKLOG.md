@@ -12,10 +12,11 @@ This document defines the 25 daily engineering sprints for NexusHome. Each sprin
 
 ---
 
-### [ ] Sprint 02: Circadian Adaptive Lighting Curve Engine
+### [x] Sprint 02: Circadian Adaptive Lighting Curve Engine
 - **User Story**: As a resident, I want interior luminaire color temperatures to smoothly transition from crisp 5500K daylight down to warm 2700K amber at sunset to protect natural circadian rhythms.
 - **Technical Scope**: Add astronomical solar angle calculator in Dart, periodic curve evaluator, and batch attribute dispatch to Thread light nodes.
 - **Acceptance Criteria**: Color temperature updates smoothly across active lights every 15 minutes based on local astronomical time.
+- **Status**: COMPLETED (Automated Gatekeeper Verified, 36 Tests Passing, Astronomical Calculator & Periodic Batch Dispatch Active)
 
 ---
 

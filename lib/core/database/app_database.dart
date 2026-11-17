@@ -73,7 +73,8 @@ class AppDatabase {
         updated_at INTEGER NOT NULL,
         charge_current_amps INTEGER NOT NULL DEFAULT 16,
         charge_soc_percent REAL NOT NULL DEFAULT 65.0,
-        off_peak_enabled INTEGER NOT NULL DEFAULT 1
+        off_peak_enabled INTEGER NOT NULL DEFAULT 1,
+        circadian_enabled INTEGER NOT NULL DEFAULT 1
       )
     ''');
 

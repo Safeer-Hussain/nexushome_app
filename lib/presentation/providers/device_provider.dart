@@ -167,6 +167,54 @@ class DeviceListNotifier extends StateNotifier<List<DeviceEntity>> {
     );
   }
 
+  Future<void> toggleCircadianMode(String id) async {
+    final index = state.indexWhere((d) => d.id == id);
+    if (index == -1) return;
+
+    final target = state[index];
+    final updated = target.copyWith(
+      circadianModeEnabled: !target.circadianModeEnabled,
+    );
+
+    state = [
+      for (final dev in state)
+        if (dev.id == id) updated else dev,
+    ];
+
+    await _repository.updateAttributes(
+      id,
+      circadianModeEnabled: updated.circadianModeEnabled,
+    );
+  }
+
+  Future<void> batchApplyCircadianKelvin(
+    int targetKelvin, {
+    int? targetBrightness,
+  }) async {
+    final eligibleIds = <String>[];
+    state = [
+      for (final dev in state)
+        if (dev.type == 'light' && dev.circadianModeEnabled) ...[
+          () {
+            eligibleIds.add(dev.id);
+            return dev.copyWith(
+              colorTemp: targetKelvin,
+              brightness: targetBrightness ?? dev.brightness,
+            );
+          }(),
+        ] else
+          dev,
+    ];
+
+    if (eligibleIds.isNotEmpty) {
+      await _repository.batchUpdateColorTemp(
+        deviceIds: eligibleIds,
+        colorTemp: targetKelvin,
+        brightness: targetBrightness,
+      );
+    }
+  }
+
   Future<void> commissionDevice(DeviceModel device) async {
     await _repository.commissionDevice(device);
     state = [...state, device];

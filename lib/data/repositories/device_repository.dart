@@ -57,6 +57,7 @@ class DeviceRepository {
     double? chargeSocPercent,
     bool? offPeakScheduleEnabled,
     double? powerWatts,
+    bool? circadianModeEnabled,
   }) async {
     final db = await appDatabase.database;
     final now = DateTime.now().millisecondsSinceEpoch;
@@ -92,6 +93,9 @@ class DeviceRepository {
     if (powerWatts != null) {
       updates['power_watts'] = powerWatts;
     }
+    if (circadianModeEnabled != null) {
+      updates['circadian_enabled'] = circadianModeEnabled ? 1 : 0;
+    }
 
     await db.update('devices', updates, where: 'id = ?', whereArgs: [id]);
 
@@ -123,6 +127,37 @@ class DeviceRepository {
         value: chargeCurrentAmps,
       );
     }
+  }
+
+  Future<void> batchUpdateColorTemp({
+    required List<String> deviceIds,
+    required int colorTemp,
+    int? brightness,
+  }) async {
+    if (deviceIds.isEmpty) return;
+    final db = await appDatabase.database;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final Map<String, dynamic> updates = {
+      'color_temp': colorTemp,
+      'updated_at': now,
+    };
+    if (brightness != null) {
+      updates['brightness'] = brightness;
+    }
+
+    final placeholders = List.filled(deviceIds.length, '?').join(',');
+    await db.update(
+      'devices',
+      updates,
+      where: 'id IN ($placeholders)',
+      whereArgs: deviceIds,
+    );
+
+    await matterBridge.batchSetDeviceAttribute(
+      deviceIds: deviceIds,
+      attribute: 'colorTemp',
+      value: colorTemp,
+    );
   }
 
   Future<void> commissionDevice(DeviceModel device) async {

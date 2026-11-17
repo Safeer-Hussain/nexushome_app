@@ -102,6 +102,7 @@ class _CommissionDeviceSheetState extends ConsumerState<CommissionDeviceSheet> {
       chargeCurrentAmps: _selectedType == 'ev_charger' ? 16 : 16,
       chargeSocPercent: _selectedType == 'ev_charger' ? 62.0 : 0.0,
       offPeakScheduleEnabled: _selectedType == 'ev_charger' ? true : false,
+      circadianModeEnabled: _selectedType == 'light',
       powerWatts: _selectedType == 'light'
           ? 20.0
           : (_selectedType == 'hvac'

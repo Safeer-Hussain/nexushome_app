@@ -63,6 +63,20 @@ class MainActivity : FlutterActivity() {
                         )
                     )
                 }
+                "batchSetDeviceAttribute" -> {
+                    val deviceIds = call.argument<List<String>>("deviceIds") ?: emptyList()
+                    val attribute = call.argument<String>("attribute") ?: ""
+                    val value = call.argument<Any>("value")
+                    result.success(
+                        mapOf(
+                            "status" to "BATCH_DISPATCHED",
+                            "affectedDevices" to deviceIds.size,
+                            "attribute" to attribute,
+                            "value" to value,
+                            "latencyMs" to (10 + Random.nextInt(12))
+                        )
+                    )
+                }
                 "triggerAutomationScene" -> {
                     val sceneId = call.argument<String>("sceneId") ?: ""
                     val affectedCount = call.argument<Int>("deviceCount") ?: 4

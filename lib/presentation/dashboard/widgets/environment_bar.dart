@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../providers/circadian_provider.dart';
 import '../../providers/device_provider.dart';
 import '../../providers/security_provider.dart';
 
@@ -11,6 +12,7 @@ class EnvironmentBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final devices = ref.watch(deviceListProvider);
     final securityMode = ref.watch(securityModeProvider);
+    final circadian = ref.watch(circadianProvider);
     final colorScheme = Theme.of(context).colorScheme;
 
     final activeCount = devices.where((d) => d.isPowered).length;
@@ -54,6 +56,12 @@ class EnvironmentBar extends ConsumerWidget {
               label: 'AQI',
               value: '28 (Good)',
               color: colorScheme.primary,
+            ),
+            _MetricItem(
+              icon: Icons.wb_sunny_outlined,
+              label: 'Circadian',
+              value: '${circadian.state.targetKelvin}K',
+              color: colorScheme.secondary,
             ),
             _MetricItem(
               icon: Icons.shield_outlined,

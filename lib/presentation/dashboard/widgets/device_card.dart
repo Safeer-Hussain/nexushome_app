@@ -24,7 +24,11 @@ class DeviceCard extends ConsumerWidget {
         icon = isPowered
             ? Icons.lightbulb_rounded
             : Icons.lightbulb_outline_rounded;
-        statusText = isPowered ? '${device.brightness}% Brightness' : 'Off';
+        statusText = isPowered
+            ? (device.circadianModeEnabled
+                  ? '${device.colorTemp}K • Circadian'
+                  : '${device.brightness}% • ${device.colorTemp}K')
+            : 'Off';
         break;
       case 'hvac':
         icon = Icons.thermostat_rounded;

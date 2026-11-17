@@ -22,6 +22,7 @@ class DeviceModel extends DeviceEntity {
     super.chargeCurrentAmps,
     super.chargeSocPercent,
     super.offPeakScheduleEnabled,
+    super.circadianModeEnabled,
   });
 
   factory DeviceModel.fromMap(Map<String, dynamic> map) {
@@ -47,6 +48,7 @@ class DeviceModel extends DeviceEntity {
       chargeCurrentAmps: map['charge_current_amps'] as int? ?? 16,
       chargeSocPercent: (map['charge_soc_percent'] as num?)?.toDouble() ?? 65.0,
       offPeakScheduleEnabled: (map['off_peak_enabled'] as int? ?? 1) == 1,
+      circadianModeEnabled: (map['circadian_enabled'] as int? ?? 1) == 1,
     );
   }
 
@@ -72,6 +74,7 @@ class DeviceModel extends DeviceEntity {
       'charge_current_amps': chargeCurrentAmps,
       'charge_soc_percent': chargeSocPercent,
       'off_peak_enabled': offPeakScheduleEnabled ? 1 : 0,
+      'circadian_enabled': circadianModeEnabled ? 1 : 0,
     };
   }
 
@@ -97,6 +100,7 @@ class DeviceModel extends DeviceEntity {
       chargeCurrentAmps: entity.chargeCurrentAmps,
       chargeSocPercent: entity.chargeSocPercent,
       offPeakScheduleEnabled: entity.offPeakScheduleEnabled,
+      circadianModeEnabled: entity.circadianModeEnabled,
     );
   }
 }

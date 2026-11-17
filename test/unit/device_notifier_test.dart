@@ -171,5 +171,43 @@ void main() {
       );
       expect(updatedAgain.offPeakScheduleEnabled, isTrue);
     });
+
+    test('Toggles circadian adaptive mode on a light device', () async {
+      await notifier.loadDevices();
+      const devId = 'dev_living_ambient_light';
+
+      final initial = notifier.state.firstWhere((d) => d.id == devId);
+      expect(initial.circadianModeEnabled, isTrue);
+
+      await notifier.toggleCircadianMode(devId);
+      final toggled = notifier.state.firstWhere((d) => d.id == devId);
+      expect(toggled.circadianModeEnabled, isFalse);
+
+      final repoDev = repository.devices.firstWhere((d) => d.id == devId);
+      expect(repoDev.circadianModeEnabled, isFalse);
+
+      await notifier.toggleCircadianMode(devId);
+      final restored = notifier.state.firstWhere((d) => d.id == devId);
+      expect(restored.circadianModeEnabled, isTrue);
+    });
+
+    test(
+      'Batch applies circadian Kelvin only to circadian-enabled lights',
+      () async {
+        await notifier.loadDevices();
+        const lightId = 'dev_living_ambient_light';
+        const hvacId = 'dev_living_hvac';
+
+        // dev_living_ambient_light has circadianModeEnabled = true
+        // dev_living_hvac is type 'hvac'
+        await notifier.batchApplyCircadianKelvin(5200);
+
+        final light = notifier.state.firstWhere((d) => d.id == lightId);
+        expect(light.colorTemp, equals(5200));
+
+        final hvac = notifier.state.firstWhere((d) => d.id == hvacId);
+        expect(hvac.colorTemp, equals(0)); // Unaffected
+      },
+    );
   });
 }

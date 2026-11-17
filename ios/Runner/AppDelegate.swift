@@ -64,6 +64,16 @@ import UIKit
           "attribute": args?["attribute"] ?? "",
           "value": args?["value"] ?? ""
         ])
+      case "batchSetDeviceAttribute":
+        let args = call.arguments as? [String: Any]
+        let deviceIds = args?["deviceIds"] as? [String] ?? []
+        result([
+          "status": "BATCH_DISPATCHED",
+          "affectedDevices": deviceIds.count,
+          "attribute": args?["attribute"] ?? "",
+          "value": args?["value"] ?? "",
+          "latencyMs": 11 + Int(arc4random_uniform(8))
+        ])
       case "triggerAutomationScene":
         let args = call.arguments as? [String: Any]
         result([

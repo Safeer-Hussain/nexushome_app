@@ -20,6 +20,7 @@ class DeviceEntity {
   final int chargeCurrentAmps; // 6A - 32A
   final double chargeSocPercent; // 0 - 100%
   final bool offPeakScheduleEnabled;
+  final bool circadianModeEnabled;
 
   const DeviceEntity({
     required this.id,
@@ -42,6 +43,7 @@ class DeviceEntity {
     this.chargeCurrentAmps = 16,
     this.chargeSocPercent = 65.0,
     this.offPeakScheduleEnabled = true,
+    this.circadianModeEnabled = true,
   });
 
   DeviceEntity copyWith({
@@ -65,6 +67,7 @@ class DeviceEntity {
     int? chargeCurrentAmps,
     double? chargeSocPercent,
     bool? offPeakScheduleEnabled,
+    bool? circadianModeEnabled,
   }) {
     return DeviceEntity(
       id: id ?? this.id,
@@ -88,6 +91,7 @@ class DeviceEntity {
       chargeSocPercent: chargeSocPercent ?? this.chargeSocPercent,
       offPeakScheduleEnabled:
           offPeakScheduleEnabled ?? this.offPeakScheduleEnabled,
+      circadianModeEnabled: circadianModeEnabled ?? this.circadianModeEnabled,
     );
   }
 }

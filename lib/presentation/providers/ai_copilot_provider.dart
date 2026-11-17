@@ -179,6 +179,19 @@ class AiCopilotNotifier extends StateNotifier<AiCopilotState> {
       return 'EV Charging Intelligence: Monitoring $evCount Level 2 EVSE terminal(s). '
           'Current Battery SoC: $evSoc%. Smart Off-Peak Scheduler is currently ${offPeak ? 'ACTIVE (deferring high-current draw to 23:00-06:00 or solar surplus > 3.5 kW)' : 'PAUSED (Immediate charging mode)'}. '
           'Recommendation: Keep off-peak scheduling enabled with a 16A-24A solar-tracking limit to avoid grid demand charges and save up to 45% on vehicle charging expenses.';
+    } else if (lower.contains('circadian') ||
+        lower.contains('adaptive light') ||
+        lower.contains('kelvin') ||
+        lower.contains('color temp') ||
+        lower.contains('sunset') ||
+        lower.contains('daylight')) {
+      final activeLights = devices.where((d) => d.type == 'light').toList();
+      final circadianCount = activeLights
+          .where((d) => d.circadianModeEnabled)
+          .length;
+      return 'Circadian Adaptive Engine Audit: Monitoring ${activeLights.length} luminaires across your residence, with $circadianCount synchronized to natural astronomical solar curves. '
+          'Target color temperatures dynamically shift from crisp 5500K daylight at solar noon to warm 2700K amber after sunset to promote restorative melatonin synthesis. '
+          'Dispatched via Thread 1.3 mesh broadcast with zero cloud dependencies every 15 minutes.';
     } else if (lower.contains('vampire') || lower.contains('standby')) {
       return 'Vampire Standby Audit complete. Found $activeCount active devices drawing ${totalWatts.toStringAsFixed(1)} W. '
           'Culinary Luminaire Array and Studio Task Spotlight account for 93.0 W of continuous draw while unoccupied. '

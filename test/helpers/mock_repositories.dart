@@ -114,6 +114,7 @@ class FakeDeviceRepository implements DeviceRepository {
     double? chargeSocPercent,
     bool? offPeakScheduleEnabled,
     double? powerWatts,
+    bool? circadianModeEnabled,
   }) async {
     final idx = devices.indexWhere((d) => d.id == id);
     if (idx != -1) {
@@ -129,8 +130,27 @@ class FakeDeviceRepository implements DeviceRepository {
           chargeSocPercent: chargeSocPercent,
           offPeakScheduleEnabled: offPeakScheduleEnabled,
           powerWatts: powerWatts,
+          circadianModeEnabled: circadianModeEnabled,
         ),
       );
+    }
+  }
+
+  @override
+  Future<void> batchUpdateColorTemp({
+    required List<String> deviceIds,
+    required int colorTemp,
+    int? brightness,
+  }) async {
+    for (int i = 0; i < devices.length; i++) {
+      if (deviceIds.contains(devices[i].id)) {
+        devices[i] = DeviceModel.fromEntity(
+          devices[i].copyWith(
+            colorTemp: colorTemp,
+            brightness: brightness ?? devices[i].brightness,
+          ),
+        );
+      }
     }
   }
 
