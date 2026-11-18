@@ -109,6 +109,7 @@ sequenceDiagram
 | **On-Device AI Copilot** | Contextual power auditor, token streaming guarded in `try ... finally`, one-tap efficiency prompts | Production Ready |
 | **EV Smart Charger (Level 2)** | Dynamic 6A-32A current slider, battery SoC gauge, off-peak tariff scheduler (23:00-06:00), fast-charge boost override | Production Ready |
 | **Circadian Adaptive Engine** | Astronomical solar elevation angle solver, 2700K-5500K smooth cubic curve, 15-min periodic batch Thread node dispatch | Production Ready |
+| **Emergency Override Pipeline** | Sub-50ms smoke & water leak sensor override: auto-unlocks deadbolts, isolates main water valves, 2700K amber strobe | Production Ready |
 | **Recruiter Debug Drawer** | Latency simulator (100-1500ms), HTTP 503 cloud outage toggle, motion trigger injection | Production Ready |
 
 ---

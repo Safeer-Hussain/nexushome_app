@@ -82,6 +82,15 @@ import UIKit
           "affectedDevices": args?["deviceCount"] ?? 4,
           "meshTransitTimeMs": 20 + Int(arc4random_uniform(15))
         ])
+      case "triggerEmergencyOverride":
+        let args = call.arguments as? [String: Any]
+        result([
+          "status": "EMERGENCY_OVERRIDE_ENGAGED",
+          "eventType": args?["eventType"] ?? "UNKNOWN",
+          "sourceDevice": args?["sourceDevice"] ?? "Sensor",
+          "doorsUnlocked": true,
+          "executionLatencyMs": 9 + Int(arc4random_uniform(10))
+        ])
       case "runMeshDiagnostics":
         result([
           "status": "HEALTHY",

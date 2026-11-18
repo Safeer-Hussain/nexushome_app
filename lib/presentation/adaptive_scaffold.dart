@@ -10,6 +10,7 @@ import 'ai_copilot/ai_copilot_view.dart';
 import 'settings/settings_view.dart';
 import 'settings/widgets/recruiter_debug_drawer.dart';
 import 'providers/connectivity_provider.dart';
+import 'common/widgets/emergency_alert_banner.dart';
 
 final navigationIndexProvider = StateProvider<int>((ref) => 0);
 
@@ -191,6 +192,7 @@ class AdaptiveScaffold extends ConsumerWidget {
             body: Column(
               children: [
                 offlineBanner,
+                const EmergencyAlertBanner(),
                 Expanded(
                   child: Row(
                     children: [
@@ -269,6 +271,7 @@ class AdaptiveScaffold extends ConsumerWidget {
           body: Column(
             children: [
               offlineBanner,
+              const EmergencyAlertBanner(),
               Expanded(
                 child: IndexedStack(index: currentIndex, children: screens),
               ),

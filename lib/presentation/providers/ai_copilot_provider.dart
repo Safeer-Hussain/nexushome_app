@@ -192,6 +192,18 @@ class AiCopilotNotifier extends StateNotifier<AiCopilotState> {
       return 'Circadian Adaptive Engine Audit: Monitoring ${activeLights.length} luminaires across your residence, with $circadianCount synchronized to natural astronomical solar curves. '
           'Target color temperatures dynamically shift from crisp 5500K daylight at solar noon to warm 2700K amber after sunset to promote restorative melatonin synthesis. '
           'Dispatched via Thread 1.3 mesh broadcast with zero cloud dependencies every 15 minutes.';
+    } else if (lower.contains('emergency') ||
+        lower.contains('smoke') ||
+        lower.contains('leak') ||
+        lower.contains('valve') ||
+        lower.contains('alarm')) {
+      final lockCount = devices.where((d) => d.type == 'lock').length;
+      final valveCount = devices.where((d) => d.type == 'valve').length;
+      final lightsCount = devices.where((d) => d.type == 'light').length;
+      return 'Emergency Override System Status: Armed and operating autonomously via edge SQLite and Matter platform bridge. '
+          'Under critical smoke or water leak alarm, the emergency pipeline triggers in < 50ms: '
+          'all $lockCount perimeter exit deadbolts unlock immediately, $valveCount main water valves close to prevent structural flooding, '
+          'and $lightsCount luminaires transition to 2700K high-visibility amber evacuation strobe.';
     } else if (lower.contains('vampire') || lower.contains('standby')) {
       return 'Vampire Standby Audit complete. Found $activeCount active devices drawing ${totalWatts.toStringAsFixed(1)} W. '
           'Culinary Luminaire Array and Studio Task Spotlight account for 93.0 W of continuous draw while unoccupied. '

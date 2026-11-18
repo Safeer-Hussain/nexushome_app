@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/utils/app_feedback.dart';
+import '../../../domain/entities/emergency_event.dart';
+import '../../providers/emergency_provider.dart';
 import '../../providers/recruiter_debug_provider.dart';
 import '../../providers/security_provider.dart';
 
@@ -215,6 +217,76 @@ class RecruiterDebugDrawer extends ConsumerWidget {
                       context,
                       'Injected critical battery alert to sentinel.',
                     );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Critical Emergency Overrides',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: colorScheme.error,
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: colorScheme.error,
+                    foregroundColor: colorScheme.onError,
+                  ),
+                  icon: const Icon(
+                    Icons.local_fire_department_rounded,
+                    size: 16,
+                  ),
+                  label: const Text('Simulate Smoke Emergency'),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await ref
+                        .read(emergencyProvider.notifier)
+                        .triggerEmergency(
+                          type: EmergencyType.smoke,
+                          sourceDeviceId: 'dev_kitchen_smoke_detector',
+                          sourceDeviceName: 'Kitchen Smoke & Thermal Sensor',
+                          room: 'Kitchen',
+                        );
+                    if (context.mounted) {
+                      AppFeedback.showError(
+                        context,
+                        'Smoke Emergency Override engaged! Deadbolts unlocked & amber lights active.',
+                      );
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: colorScheme.errorContainer,
+                    foregroundColor: colorScheme.onErrorContainer,
+                  ),
+                  icon: const Icon(Icons.water_damage_rounded, size: 16),
+                  label: const Text('Simulate Water Leak Alarm'),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await ref
+                        .read(emergencyProvider.notifier)
+                        .triggerEmergency(
+                          type: EmergencyType.waterLeak,
+                          sourceDeviceId: 'dev_laundry_water_leak_sensor',
+                          sourceDeviceName: 'Garage Sub-Floor Leak Detector',
+                          room: 'Solar Garage',
+                        );
+                    if (context.mounted) {
+                      AppFeedback.showError(
+                        context,
+                        'Water Leak Override engaged! Main valve closed & deadbolts unlocked.',
+                      );
+                    }
                   },
                 ),
               ),

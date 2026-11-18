@@ -4,9 +4,11 @@ import 'package:nexus_home_app/data/models/automation_rule_model.dart';
 import 'package:nexus_home_app/data/models/device_model.dart';
 import 'package:nexus_home_app/data/models/mesh_node_model.dart';
 import 'package:nexus_home_app/data/models/scene_model.dart';
+import 'package:nexus_home_app/data/models/emergency_event_model.dart';
 import 'package:nexus_home_app/data/repositories/automation_repository.dart';
 import 'package:nexus_home_app/data/repositories/device_repository.dart';
 import 'package:nexus_home_app/data/repositories/mesh_repository.dart';
+import 'package:nexus_home_app/data/repositories/emergency_repository.dart';
 
 class FakeDeviceRepository implements DeviceRepository {
   List<DeviceModel> devices = [];
@@ -294,5 +296,51 @@ class FakeAutomationRepository implements AutomationRepository {
   @override
   Future<void> deleteRule(String id) async {
     rules.removeWhere((r) => r.id == id);
+  }
+}
+
+class FakeEmergencyRepository implements EmergencyRepository {
+  List<EmergencyEventModel> events = [];
+
+  FakeEmergencyRepository([List<EmergencyEventModel>? initial]) {
+    events = initial != null ? List.from(initial) : [];
+  }
+
+  @override
+  AppDatabase get appDatabase => throw UnimplementedError();
+
+  @override
+  MatterNativeBridge get matterBridge => throw UnimplementedError();
+
+  @override
+  Future<List<EmergencyEventModel>> getActiveEmergencies() async =>
+      events.where((e) => !e.isResolved).toList();
+
+  @override
+  Future<List<EmergencyEventModel>> getAllEmergencyHistory() async =>
+      List.from(events);
+
+  @override
+  Future<void> recordEmergency(EmergencyEventModel event) async {
+    events.insert(0, event);
+  }
+
+  @override
+  Future<void> resolveEmergency(String id) async {
+    final idx = events.indexWhere((e) => e.id == id);
+    if (idx != -1) {
+      events[idx] = EmergencyEventModel.fromEntity(
+        events[idx].copyWith(isResolved: true),
+      );
+    }
+  }
+
+  @override
+  Future<void> resolveAllEmergencies() async {
+    for (int i = 0; i < events.length; i++) {
+      events[i] = EmergencyEventModel.fromEntity(
+        events[i].copyWith(isResolved: true),
+      );
+    }
   }
 }

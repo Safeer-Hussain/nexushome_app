@@ -59,6 +59,20 @@ class DeviceCard extends ConsumerWidget {
                   : '$kw kW • Boost')
             : 'Idle • ${device.chargeSocPercent.toInt()}% SoC';
         break;
+      case 'valve':
+        icon = device.isLocked
+            ? Icons.plumbing_rounded
+            : Icons.water_drop_rounded;
+        statusText = device.isLocked ? 'Closed (Shut)' : 'Open (Flowing)';
+        break;
+      case 'smoke_sensor':
+        icon = Icons.local_fire_department_rounded;
+        statusText = isPowered ? 'Active • Normal' : 'Offline';
+        break;
+      case 'leak_sensor':
+        icon = Icons.water_damage_rounded;
+        statusText = isPowered ? 'Active • Dry' : 'Offline';
+        break;
       default:
         icon = Icons.devices_other_rounded;
         statusText = isPowered ? 'Active' : 'Standby';

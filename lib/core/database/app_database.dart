@@ -133,6 +133,22 @@ class AppDatabase {
       )
     ''');
 
+    // 6. Emergency Priority Events Table
+    await db.execute('''
+      CREATE TABLE emergency_events (
+        id TEXT PRIMARY KEY,
+        type TEXT NOT NULL,
+        severity TEXT NOT NULL,
+        source_device_id TEXT NOT NULL,
+        source_device_name TEXT NOT NULL,
+        room TEXT NOT NULL,
+        description TEXT NOT NULL,
+        timestamp INTEGER NOT NULL,
+        is_resolved INTEGER NOT NULL DEFAULT 0,
+        actions_executed TEXT NOT NULL
+      )
+    ''');
+
     await _seedInitialData(db);
   }
 
@@ -317,6 +333,63 @@ class AppDatabase {
         'charge_current_amps': 32,
         'charge_soc_percent': 68.0,
         'off_peak_enabled': 1,
+      },
+      {
+        'id': 'dev_utility_water_shutoff',
+        'name': 'Main Water Shutoff Valve',
+        'room': 'Solar Garage',
+        'type': 'valve',
+        'protocol': 'Thread 1.3',
+        'is_powered': 1,
+        'brightness': 0,
+        'color_temp': 0,
+        'target_temp': 0.0,
+        'current_temp': 0.0,
+        'hvac_mode': 'off',
+        'is_locked': 0,
+        'position': 100,
+        'power_watts': 5.0,
+        'rssi': -44,
+        'pairing_code': '9941-8812-301',
+        'updated_at': now,
+      },
+      {
+        'id': 'dev_kitchen_smoke_detector',
+        'name': 'Kitchen Smoke & Thermal Sensor',
+        'room': 'Kitchen',
+        'type': 'smoke_sensor',
+        'protocol': 'Thread 1.3',
+        'is_powered': 1,
+        'brightness': 0,
+        'color_temp': 0,
+        'target_temp': 0.0,
+        'current_temp': 24.2,
+        'hvac_mode': 'off',
+        'is_locked': 0,
+        'position': 0,
+        'power_watts': 1.2,
+        'rssi': -38,
+        'pairing_code': '4410-2299-705',
+        'updated_at': now,
+      },
+      {
+        'id': 'dev_laundry_water_leak_sensor',
+        'name': 'Garage Sub-Floor Leak Detector',
+        'room': 'Solar Garage',
+        'type': 'leak_sensor',
+        'protocol': 'Thread 1.3',
+        'is_powered': 1,
+        'brightness': 0,
+        'color_temp': 0,
+        'target_temp': 0.0,
+        'current_temp': 21.0,
+        'hvac_mode': 'off',
+        'is_locked': 0,
+        'position': 0,
+        'power_watts': 0.8,
+        'rssi': -46,
+        'pairing_code': '8120-4491-112',
+        'updated_at': now,
       },
     ];
 

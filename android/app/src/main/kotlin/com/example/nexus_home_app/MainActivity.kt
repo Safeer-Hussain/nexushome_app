@@ -89,6 +89,19 @@ class MainActivity : FlutterActivity() {
                         )
                     )
                 }
+                "triggerEmergencyOverride" -> {
+                    val eventType = call.argument<String>("eventType") ?: "UNKNOWN"
+                    val sourceDevice = call.argument<String>("sourceDevice") ?: "Sensor"
+                    result.success(
+                        mapOf(
+                            "status" to "EMERGENCY_OVERRIDE_ENGAGED",
+                            "eventType" to eventType,
+                            "sourceDevice" to sourceDevice,
+                            "doorsUnlocked" to true,
+                            "executionLatencyMs" to (8 + Random.nextInt(12))
+                        )
+                    )
+                }
                 "runMeshDiagnostics" -> {
                     val diagnostics = mapOf(
                         "status" to "HEALTHY",

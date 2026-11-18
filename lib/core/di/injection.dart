@@ -7,6 +7,7 @@ import '../../data/repositories/mesh_repository.dart';
 import '../../data/repositories/automation_repository.dart';
 import '../../data/repositories/security_repository.dart';
 import '../../data/repositories/energy_repository.dart';
+import '../../data/repositories/emergency_repository.dart';
 
 final getIt = GetIt.instance;
 
@@ -49,6 +50,14 @@ void setupDependencyInjection() {
   if (!getIt.isRegistered<EnergyRepository>()) {
     getIt.registerLazySingleton<EnergyRepository>(
       () => EnergyRepository(matterBridge: getIt<MatterNativeBridge>()),
+    );
+  }
+  if (!getIt.isRegistered<EmergencyRepository>()) {
+    getIt.registerLazySingleton<EmergencyRepository>(
+      () => EmergencyRepository(
+        appDatabase: getIt<AppDatabase>(),
+        matterBridge: getIt<MatterNativeBridge>(),
+      ),
     );
   }
 }

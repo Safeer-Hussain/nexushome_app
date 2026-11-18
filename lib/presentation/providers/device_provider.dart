@@ -215,6 +215,78 @@ class DeviceListNotifier extends StateNotifier<List<DeviceEntity>> {
     }
   }
 
+  /// Emergency Override Action: Unlocks all perimeter exit deadbolts within milliseconds
+  Future<int> unlockAllExitDoors() async {
+    final unlockedIds = <String>[];
+    state = [
+      for (final dev in state)
+        if (dev.type == 'lock') ...[
+          () {
+            unlockedIds.add(dev.id);
+            return dev.copyWith(isLocked: false);
+          }(),
+        ] else
+          dev,
+    ];
+
+    for (final id in unlockedIds) {
+      await _repository.updateAttributes(id, isLocked: false);
+    }
+    return unlockedIds.length;
+  }
+
+  /// Emergency Override Action: Drives interior luminaires to high-visibility amber strobe (2700K 100%)
+  Future<int> setEmergencyAmberStrobe() async {
+    final lightIds = <String>[];
+    state = [
+      for (final dev in state)
+        if (dev.type == 'light') ...[
+          () {
+            lightIds.add(dev.id);
+            return dev.copyWith(
+              isPowered: true,
+              colorTemp: 2700,
+              brightness: 100,
+            );
+          }(),
+        ] else
+          dev,
+    ];
+
+    if (lightIds.isNotEmpty) {
+      await _repository.batchUpdateColorTemp(
+        deviceIds: lightIds,
+        colorTemp: 2700,
+        brightness: 100,
+      );
+      for (final id in lightIds) {
+        await _repository.togglePower(id, true);
+      }
+    }
+    return lightIds.length;
+  }
+
+  /// Emergency Override Action: Closes main water valves immediately to mitigate flooding
+  Future<int> closeMainWaterValves() async {
+    final valveIds = <String>[];
+    state = [
+      for (final dev in state)
+        if (dev.type == 'valve') ...[
+          () {
+            valveIds.add(dev.id);
+            return dev.copyWith(isLocked: true, position: 0, isPowered: false);
+          }(),
+        ] else
+          dev,
+    ];
+
+    for (final id in valveIds) {
+      await _repository.updateAttributes(id, isLocked: true, position: 0);
+      await _repository.togglePower(id, false);
+    }
+    return valveIds.length;
+  }
+
   Future<void> commissionDevice(DeviceModel device) async {
     await _repository.commissionDevice(device);
     state = [...state, device];
